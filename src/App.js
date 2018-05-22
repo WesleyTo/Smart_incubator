@@ -7,7 +7,7 @@ import ReactChartkick, { LineChart } from 'react-chartkick'
 import Slider, { Range } from 'rc-slider';
 import 'rc-slider/assets/index.css';
 
-var dataHours = 3;
+var dataHours = 2;
 var boxName = "myco-prototype";
 var timezone = " PDT"
 
@@ -92,6 +92,8 @@ class App extends Component {
 			caption: "Present",
 			tmp: 30,
 			hum: 95,
+      settmp: 30,
+      sethum: 95,
 			r_val: 0,
 			g_val: 0,
 			b_val: 0,
@@ -128,6 +130,16 @@ class App extends Component {
 	}
 
 	change_val = (val, name) => {
+    if (name === "lightR")
+      this.setState({r_val:val});
+    if (name === "lightG")
+      this.setState({g_val:val});
+    if (name === "lightB")
+      this.setState({b_val:val});
+    if (name === "setTemperature")
+      this.setState({settmp:val});
+    if (name === "setHumidity")
+      this.setState({sethum:val});
 		if (this.state.database)
 			this.state.database.ref('configs/' + boxName + '/' + name).set(val); 
 	}
@@ -256,7 +268,7 @@ class App extends Component {
               id="tSlider" 
               min={15}
               max={60}
-              defaultValue={this.state.tmp}
+              value={this.state.settmp}
               marks={marks}
               onChange={(val) => this.change_val(val, "setTemperature")}  
               />
@@ -266,7 +278,7 @@ class App extends Component {
               id="hSlider" 
               min={5}
               max={95}
-              defaultValue={this.state.hum}
+              value={this.state.sethum}
               marks={marks_hum}
               onChange={(val) => this.change_val(val, "setHumidity")} 
               />
@@ -279,7 +291,7 @@ class App extends Component {
     					min={0}
     					max={254}
     					marks={marks_color}
-    					defaultValue={128}
+    					value={this.state.r_val}
     					onChange={(val) => this.change_val(val, "lightR")}
     					trackStyle={{ backgroundColor: 'red' }}
     					handleStyle={{
@@ -294,7 +306,7 @@ class App extends Component {
     					min={0}
     					max={254}
     					marks={marks_color}
-    					defaultValue={128}
+              value={this.state.g_val}
     					onChange={(val) => this.change_val(val, "lightG")}
     					trackStyle={{ backgroundColor: 'green' }}
     					handleStyle={{
@@ -309,7 +321,7 @@ class App extends Component {
     					min={0}
     					max={254}
     					marks={marks_color}
-    					defaultValue={128}
+              value={this.state.b_val}
     					onChange={(val) => this.change_val(val, "lightB")} 
     					trackStyle={{ backgroundColor: 'blue' }}
     					handleStyle={{
@@ -320,10 +332,6 @@ class App extends Component {
     				</div>
           </div>
         </div>
-        <div>
-          <button className="demo" onClick={() => this.setDemo(true)}>Start Demo</button>
-          <button className="demo" onClick={() => this.setDemo(false)}>End Demo</button>
-        </div>
 				<pre>Current Temperature: {this.state.tmp}°C        Current Humidity: {this.state.hum}%</pre>
 
         <LineChart 
@@ -333,6 +341,7 @@ class App extends Component {
           max={100}
           height={300}
           colors={["#C10", "#08D"]}
+          curve={false}
         />
 			</div>
 		);
